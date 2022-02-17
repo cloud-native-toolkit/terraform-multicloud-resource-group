@@ -24,3 +24,7 @@ output "sync" {
   value       = var.resource_group_name
   depends_on  = [module.azure, module.ibm]
 }
+
+output "cloud_provider" {
+  value = var.cloud_provider
+}
