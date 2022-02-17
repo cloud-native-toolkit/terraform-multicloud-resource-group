@@ -48,3 +48,17 @@ variable "vpc_cluster" {
   description = "Flag indicating that this is a vpc cluster"
   default     = false
 }
+
+variable "cloud_provider" {}
+
+variable "subscription_id" {}
+
+variable "client_id" {}
+
+variable "client_secret" {}
+
+variable "tenant_id" {}
+
+variable "access_key"{}
+
+variable "secret_key"{}
