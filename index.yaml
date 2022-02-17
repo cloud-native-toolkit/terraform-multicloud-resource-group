@@ -1,0 +1,62 @@
+name: multicloud-resource-group
+type: terraform
+description: >-
+  Module to provision a resource group in IBM Cloud or Azure. For AWS this
+  module doesn't do anything
+tags:
+  - tools
+  - devops
+versions:
+  - platforms: []
+    providers:
+      - name: ibm
+        source: ibm-cloud/ibm
+      - name: aws
+        source: hashicorp/aws
+      - name: azurerm
+        source: hashicorp/azurerm
+    dependencies:
+      - id: sync
+        refs: []
+        interface: github.com/cloud-native-toolkit/automation-modules#sync
+        manualResolution: true
+        optional: true
+    variables:
+      - name: resource_group_name
+        type: string
+        description: The name of the resource group
+        alias: name
+        scope: module
+      - name: provision
+        type: bool
+        description: Flag indicating that the resource group should be created
+        default: true
+      - name: sync
+        type: string
+        description: Value used to order the provisioning of the resource group
+        default: ''
+        moduleRef:
+          id: sync
+          output: sync
+      - name: cloud_provider
+        type: string
+        description: >-
+          The cloud provider where the VPC resource should be provisioned. Valid
+          values are 'ibm' and 'aws'
+      - name: region
+        type: string
+        description: The region where the resource group should be provisioned
+        default: ''
+    version: v1.0.0
+    outputs:
+      - name: name
+        description: The name of the resource group
+      - name: id
+        description: The id of the resource group
+      - name: group
+        description: The resource group object
+      - name: provision
+        description: Flag indicating whether the resource group was provisioned
+      - name: sync
+        description: Value used to order the provisioning of the resource group
+id: github.com/cloud-native-toolkit/terraform-multicloud-resource-group
