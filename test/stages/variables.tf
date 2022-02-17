@@ -26,11 +26,6 @@ variable "cluster_name" {
   default     = ""
 }
 
-variable "cluster_type" {
-  type        = string
-  description = "The type of cluster that should be created (openshift or kubernetes)"
-}
-
 variable "cluster_exists" {
   type        = string
   description = "Flag indicating if the cluster already exists (true or false)"
@@ -48,3 +43,17 @@ variable "vpc_cluster" {
   description = "Flag indicating that this is a vpc cluster"
   default     = false
 }
+
+variable "cloud_provider" {}
+
+variable "subscription_id" {}
+
+variable "client_id" {}
+
+variable "client_secret" {}
+
+variable "tenant_id" {}
+
+variable "access_key"{}
+
+variable "secret_key"{}
