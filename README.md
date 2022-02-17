@@ -1,29 +1,10 @@
-# Starter kit for a Terraform module
-
-This is a Starter kit to help with the creation of Terraform modules. The basic structure of a Terraform module is fairly
-simple and consists of the following basic values:
-
-- README.md - provides a description of the module
-- main.tf - defiens the logic for the module
-- variables.tf (optional) - defines the input variables for the module
-- outputs.tf (optional) - defines the values that are output from the module
-
-Beyond those files, any other content can be added and organized however you see fit. For example, you can add a `scripts/` directory
-that contains shell scripts executed by a `local-exec` `null_resource` in the terraform module. The contents will depend on what your
-module does and how it does it.
-
-## Instructions for creating a new module
-
-1. Update the title and description in the README to match the module you are creating
-2. Fill out the remaining sections in the README template as appropriate
-3. Implement your logic in the in the main.tf, variables.tf, and outputs.tf
-4. Use releases/tags to manage release versions of your module
+# Multicloud Resource Group
 
 ## Module overview
 
 ### Description
 
-Description of module
+Module to provision a resource group on IBM Cloud or Azure. For AWS, this module is a pass-through. The selection of cloud provider is identified by the `cloud_provider` variable.
 
 **Note:** This module follows the Terraform conventions regarding how provider configuration is defined within the Terraform template and passed into the module - https://www.terraform.io/docs/language/modules/develop/providers.html. The default provider configuration flows through to the module. If different configuration is required for a module, it can be explicitly passed in the `providers` block of the module - https://www.terraform.io/docs/language/modules/develop/providers.html#passing-providers-explicitly.
 
@@ -37,29 +18,58 @@ The module depends on the following software components:
 
 #### Terraform providers
 
-- IBM Cloud provider >= 1.5.3
+This module does not directly reference any providers but indirectly it references the IBM, AWS, and Azure providers
+
+- Azure provider
+- AWS provider
+- IBM Cloud provider
 
 ### Module dependencies
 
-This module makes use of the output from other modules:
-
-- Cluster - github.com/cloud-native-toolkit/terraform-ibm-container-platform.git
-- Namespace - github.com/cloud-native-toolkit/terraform-cluster-namespace.git
-- etc
+None
 
 ### Example usage
 
 ```hcl-terraform
-module "argocd" {
-  source = "github.com/cloud-native-toolkit/terraform-tools-argocd.git"
+terraform {
+  required_providers {
+    ibm = {
+      source = "ibm-cloud/ibm"
+    }
+    aws = {
+      source  = "hashicorp/aws"
+    }
+    azurerm = {
+      source  = "hashicorp/azurerm"
+    }
+  }
+}
 
-  cluster_config_file = module.dev_cluster.config_file_path
-  cluster_type        = module.dev_cluster.type
-  app_namespace       = module.dev_cluster_namespaces.tools_namespace_name
-  ingress_subdomain   = module.dev_cluster.ingress_hostname
-  olm_namespace       = module.dev_software_olm.olm_namespace
-  operator_namespace  = module.dev_software_olm.target_namespace
-  name                = "argocd"
+provider "azurerm" {
+  features {}
+
+  subscription_id = var.subscription_id
+  client_id       = var.client_id
+  client_secret   = var.client_secret
+  tenant_id       = var.tenant_id
+}
+
+provider "aws" {
+  region = var.region
+  access_key= var.access_key
+  secret_key=var.secret_key
+}
+
+provider "ibm" {
+  ibmcloud_api_key = var.ibmcloud_api_key
+}
+
+module "resource-group" {
+  source = "github.com/cloud-native-toolkit/terraform-multicloud-resource-group"
+  
+  resource_group_name = var.resource_group_name
+  region              = var.region
+  cloud_provider      = var.cloud_provider
 }
 ```
 
